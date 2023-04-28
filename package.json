@@ -1,14 +1,21 @@
 {
   "name": "my-next-fest",
   "version": "1.0.0",
-  "description": "",
+  "description": "A place for music festivals and where to find them",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MacTirney/MyNextFest"
+  },
   "keywords": [],
   "author": "MacTirney",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MacTirney/MyNextFest"
+  },
   "dependencies": {
     "ejs": "^3.1.9",
     "express": "^4.18.2",
