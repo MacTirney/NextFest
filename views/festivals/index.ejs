@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Festivals</title>
+    </head>
+
+    <body>
+        <h1>All Festivals</h1>
+        <div>
+            <a href="/festivals/new">Add Festival</a>
+        </div>
+        <ul>
+            <% for (let festival of festivals) { %>
+                <li><a href="/festivals/<%=festival._id%>"><%=festival.title%></a></li>
+            <% } %>
+        </ul>
+
+    </body>
+
+</html>
