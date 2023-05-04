@@ -3,8 +3,9 @@ const app = express();
 const path = require('path');
 const port = 3000;
 const mongoose = require('mongoose');
-const methodOverride = require('method-override')
-const Festival = require('./models/festival')
+const methodOverride = require('method-override');
+const Festival = require('./models/festival');
+const ejsEngine = require('ejs-mate');
 
 mongoose.connect('mongodb://localhost:27017/My-Next-Fest');
 
@@ -14,6 +15,7 @@ db.once("open", () => {
     console.log("Database Connected");
 });
 
+app.engine('ejs', ejsEngine)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
@@ -64,3 +66,9 @@ app.delete('/festivals/:id', async (req, res) => {
 app.listen(port, () => {
     console.log(`Serving on ${port}`)
 })
+
+// app.get('/makefestival', async (req, res) => {
+//     const festival = new Festival ({ title: 'Artic Festival', description: 'Cold Festival'})
+//     await festival.save()
+//     res.send(festival)
+// })

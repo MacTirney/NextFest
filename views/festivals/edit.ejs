@@ -1,29 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Edit Festivals</title>
-    </head>
-
-    <body>
-        <h1>Edit Festival</h1>
-        <form action="/festivals/<%=festival._id%>?_method=PUT" method="POST">
-            <div>
-                <label for="title">Title</label>
-                <input type="text", id="title" name="festival[title]" value="<%=festival.title%>">
-            </div>
-            <div>
-                <label for="location">Location</label>
-                <input type="text", id="location" name="festival[location]" value="<%=festival.location%>">
-            </div>
-            <br>
-            <button>Update Festival</button>
-        </form>
+<% layout('layouts/boilerplate') %>
+    <h1>Edit Festival</h1>
+    <form action="/festivals/<%=festival._id%>?_method=PUT" method="POST">
+        <div>
+            <label for="title">Title</label>
+            <input type="text" , id="title" name="festival[title]" value="<%=festival.title%>">
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input type="text" , id="location" name="festival[location]" value="<%=festival.location%>">
+        </div>
         <br>
-        <a href="/festivals/<%=festival._id%>">Back to Festivals</a>
-    </body>
-
-</html>
+        <button>Update Festival</button>
+    </form>
+    <br>
+    <a href="/festivals/<%=festival._id%>">Back to Festivals</a>
