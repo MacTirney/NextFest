@@ -19,9 +19,14 @@ const seedDB = async () => {
     // await f.save()
     for(let i = 0; i < 50; i++){
         const random1000 = Math.floor(Math.random() * 1000);
+        // Temporary random price
+        const price = Math.floor(Math.random() * 20) + 10;
         const festival = new Festival({
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
-            title: `${sample(descriptors)} ${sample(places)}`
+            title: `${sample(descriptors)} ${sample(places)}`,
+            image: 'https://source.unsplash.com/collection/1314854',
+            description: 'Temporary Description about what festival this is and what type of festival it is',
+            price
         })
         await festival.save()
     }

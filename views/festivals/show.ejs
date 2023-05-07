@@ -1,20 +1,25 @@
 <% layout('layouts/boilerplate') %>
-    <h1>
-        <%=festival.title%>
-    </h1>
-    <h2>
-        <%=festival.location%>
-    </h2>
-    <div>
-        <a href="/festivals/<%=festival._id%>/edit">Edit Festival</a>
+<div class="row">
+    <div class="col-6 offset-3">
+        <div class="card mb-3">
+            <img src="<%= festival.image %>" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title"><%= festival.title %></h5>
+                <p class="card-text"><%= festival.description %></p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-muted"><%= festival.location %></li>
+                <li class="list-group-item">$<%= festival.price %>/ticket</li>
+            </ul>
+            <div class="card-body">
+                <a class="card-link btn btn-info" href="/festivals/<%=festival._id%>/edit">Edit</a>
+                <form class="d-inline" action="/festivals/<%=festival._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+            <div class="card-footer text-body-secondary">
+                2 days ago
+            </div>
+        </div>
     </div>
-    <br>
-    <div>
-        <form action="/festivals/<%=festival._id%>?_method=DELETE" method="POST">
-            <button>Delete</button>
-        </form>
-    </div>
-    <br>
-    <footer>
-        <a href="/festivals">All Festivals</a>
-    </footer>
+</div>

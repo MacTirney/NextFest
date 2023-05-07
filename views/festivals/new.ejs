@@ -1,13 +1,38 @@
 <% layout('layouts/boilerplate') %>
-    <form action="/festivals" method="POST">
-        <div>
-            <label for="title">Title</label>
-            <input type="text" , id="title" name="festival[title]">
+    <div class="row">
+        <h1 class="text-center">New Festival</h1>
+        <!-- Column 6 but offset by 3 so it goes in the middle -->
+        <div class="col-6 offset-3">
+            <form action="/festivals" method="POST">
+                <div class="mb-3">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control" type="text" id="title" name="festival[title]">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-control" type="text" id="location" name="festival[location]">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="image">Image URL</label>
+                    <input class="form-control" type="text" id="image" name="festival[image]">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="price">Festival Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="price-label">$</span>
+                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
+                            aria-describedby="price-label" name="festival[price]">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" type="text" , id="description"
+                        name="festival[description]"></textarea>
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-success">Add Festival</button>
+                </div>
+            </form>
+            <a href="/festivals">All Festivals</a>
         </div>
-        <div>
-            <label for="location">Location</label>
-            <input type="text" , id="location" name="festival[location]">
-        </div>
-        <button>Add Festival</button>
-    </form>
-    <a href="/festivals">All Festivals</a>
+    </div>
