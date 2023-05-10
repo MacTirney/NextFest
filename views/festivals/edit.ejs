@@ -3,31 +3,36 @@
         <h1 class="text-center">Edit Festival</h1>
         <!-- Column 6 but offset by 3 so it goes in the middle -->
         <div class="col-6 offset-3">
-            <form action="/festivals/<%=festival._id%>?_method=PUT" method="POST">
+            <form action="/festivals/<%=festival._id%>?_method=PUT" method="POST" novalidate class="validated-form">
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
-                    <input class="form-control" type="text" id="title" name="festival[title]" value="<%=festival.title%>">
+                    <input class="form-control" type="text" id="title" name="festival[title]" value="<%=festival.title%>" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" id="location" name="festival[location]" value="<%=festival.location%>">
+                    <input class="form-control" type="text" id="location" name="festival[location]" value="<%=festival.location%>" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="image">Image URL</label>
-                    <input class="form-control" type="text" id="image" name="festival[image]" value="<%=festival.image%>">
+                    <input class="form-control" type="text" id="image" name="festival[image]" value="<%=festival.image%>" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="price">Festival Price</label>
                     <div class="input-group">
                         <span class="input-group-text" id="price-label">$</span>
                         <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
-                            aria-describedby="price-label" name="festival[price]" value="<%=festival.price%>">
+                            aria-describedby="price-label" name="festival[price]" value="<%=festival.price%>" required>
+                        <div class="valid-feedback">Looks good!</div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
                     <textarea class="form-control" type="text" , id="description"
-                        name="festival[description]"><%=festival.description%></textarea>
+                        name="festival[description]" required><%=festival.description%></textarea>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-info">Update Festival</button>
