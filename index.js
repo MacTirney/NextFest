@@ -38,6 +38,7 @@ app.get('/festivals/new', (req, res) => {
 })
 
 app.post('/festivals', catchAsync(async (req, res, next) => {
+    if (!req.body.festival) throw new ExpressError('Invalid Festival Data', 400)
     const festival = new Festival(req.body.festival)
     await festival.save()
     res.redirect(`/festivals/${festival._id}`)
@@ -65,8 +66,13 @@ app.delete('/festivals/:id', catchAsync(async (req, res) => {
     res.redirect('/festivals')
 }))
 
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page not found', 404))
+})
+
 app.use((err, req, res, next) => {
-    res.send('Something went wrong')
+    const { statusCode = 500, message = 'Something went wrong' } = err;
+    res.status(statusCode).send(message)
 })
 
 app.listen(port, () => {
