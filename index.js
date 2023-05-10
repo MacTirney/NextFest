@@ -35,10 +35,14 @@ app.get('/festivals/new', (req, res) => {
     res.render('festivals/new')
 })
 
-app.post('/festivals', async (req, res) => {
-    const festival = new Festival(req.body.festival)
-    await festival.save()
-    res.redirect(`/festivals/${festival._id}`)
+app.post('/festivals', async (req, res, next) => {
+    try {
+        const festival = new Festival(req.body.festival)
+        await festival.save()
+        res.redirect(`/festivals/${festival._id}`)
+    } catch (e) {
+        next(e)
+    }
 })
 
 app.get('/festivals/:id', async (req, res) => {
@@ -61,6 +65,10 @@ app.delete('/festivals/:id', async (req, res) => {
     const { id } = req.params
     await Festival.findByIdAndDelete(id)
     res.redirect('/festivals')
+})
+
+app.use((err, req, res, next) => {
+    res.send('Something went wrong')
 })
 
 app.listen(port, () => {
