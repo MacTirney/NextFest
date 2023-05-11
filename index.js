@@ -8,6 +8,7 @@ const Festival = require('./models/festival');
 const ejsEngine = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
+const Joi = require('joi');
 
 mongoose.connect('mongodb://localhost:27017/My-Next-Fest');
 
@@ -38,7 +39,22 @@ app.get('/festivals/new', (req, res) => {
 })
 
 app.post('/festivals', catchAsync(async (req, res, next) => {
-    if (!req.body.festival) throw new ExpressError('Invalid Festival Data', 400)
+    // if (!req.body.festival) throw new ExpressError('Invalid Festival Data', 400)
+    const festivalSchema = Joi.object ({
+        festival: Joi.object({
+            title: Joi.string().required(),
+            price: Joi.number().required().min(0),
+            image: Joi.string().required(),
+            location: Joi.string().required(),
+            description: Joi.string().required()
+        }).required()
+    })
+    const { error } = festivalSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    }
+    console.log(result)
     const festival = new Festival(req.body.festival)
     await festival.save()
     res.redirect(`/festivals/${festival._id}`)
