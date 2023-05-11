@@ -8,7 +8,7 @@ const Festival = require('./models/festival');
 const ejsEngine = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
-const Joi = require('joi');
+const { festivalSchema } = require('./schemas.js')
 
 mongoose.connect('mongodb://localhost:27017/My-Next-Fest');
 
@@ -25,6 +25,16 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
+const validateFestival = (req, res, next) => {
+    const { error } = festivalSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
+
 app.get('/',(req, res) => {
     res.render('home')
 })
@@ -38,23 +48,8 @@ app.get('/festivals/new', (req, res) => {
     res.render('festivals/new')
 })
 
-app.post('/festivals', catchAsync(async (req, res, next) => {
+app.post('/festivals', validateFestival, catchAsync(async (req, res, next) => {
     // if (!req.body.festival) throw new ExpressError('Invalid Festival Data', 400)
-    const festivalSchema = Joi.object ({
-        festival: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
-    const { error } = festivalSchema.validate(req.body)
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    }
-    console.log(result)
     const festival = new Festival(req.body.festival)
     await festival.save()
     res.redirect(`/festivals/${festival._id}`)
@@ -70,7 +65,7 @@ app.get('/festivals/:id/edit', catchAsync(async (req, res) => {
     res.render('festivals/edit', { festival })
 }))
 
-app.put('/festivals/:id', catchAsync(async (req, res) => {
+app.put('/festivals/:id', validateFestival, catchAsync(async (req, res) => {
     const { id } = req.params
     const festival = await Festival.findByIdAndUpdate(id, { ...req.body.festival })
     res.redirect(`/festivals/${festival._id}`)
