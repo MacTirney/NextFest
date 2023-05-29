@@ -5,6 +5,7 @@ const port = 3000;
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const Festival = require('./models/festival');
+const Review = require('./models/review')
 const ejsEngine = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
@@ -75,6 +76,15 @@ app.delete('/festivals/:id', catchAsync(async (req, res) => {
     const { id } = req.params
     await Festival.findByIdAndDelete(id)
     res.redirect('/festivals')
+}))
+
+app.post('/festivals/:id/reviews', catchAsync(async (req,res) => {
+    const festival = await Festival.findById(req.params.id)
+    const review = new Review(req.body.review)
+    festival.reviews.push(review)
+    await review.save()
+    await festival.save()
+    res.redirect(`/festivals/${festival._id}`)
 }))
 
 app.all('*', (req, res, next) => {
