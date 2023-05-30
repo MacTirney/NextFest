@@ -9,7 +9,7 @@ const Review = require('./models/review')
 const ejsEngine = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
-const { festivalSchema } = require('./schemas.js')
+const { festivalSchema, reviewSchema } = require('./schemas.js')
 
 mongoose.connect('mongodb://localhost:27017/My-Next-Fest');
 
@@ -28,6 +28,16 @@ app.use(methodOverride('_method'))
 
 const validateFestival = (req, res, next) => {
     const { error } = festivalSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
+
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body)
     if (error) {
         const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg, 400)
@@ -78,7 +88,7 @@ app.delete('/festivals/:id', catchAsync(async (req, res) => {
     res.redirect('/festivals')
 }))
 
-app.post('/festivals/:id/reviews', catchAsync(async (req,res) => {
+app.post('/festivals/:id/reviews', validateReview, catchAsync(async (req,res) => {
     const festival = await Festival.findById(req.params.id)
     const review = new Review(req.body.review)
     festival.reviews.push(review)
