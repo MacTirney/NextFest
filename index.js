@@ -68,7 +68,7 @@ app.post('/festivals', validateFestival, catchAsync(async (req, res, next) => {
 
 app.get('/festivals/:id', catchAsync(async (req, res) => {
     const festival = await Festival.findById(req.params.id).populate('reviews')
-    console.log(festival)
+    // console.log(festival)
     res.render('festivals/show', { festival })
 }))
 
