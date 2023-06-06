@@ -11,6 +11,8 @@ const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
 const { festivalSchema, reviewSchema } = require('./schemas.js')
 
+const festivals = require('./routes/festivals')
+
 mongoose.connect('mongodb://localhost:27017/My-Next-Fest');
 
 const db = mongoose.connection;
@@ -26,16 +28,6 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
-const validateFestival = (req, res, next) => {
-    const { error } = festivalSchema.validate(req.body)
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    } else {
-        next();
-    }
-}
-
 const validateReview = (req, res, next) => {
     const { error } = reviewSchema.validate(req.body)
     if (error) {
@@ -46,48 +38,11 @@ const validateReview = (req, res, next) => {
     }
 }
 
+app.use('/festivals', festivals)
+
 app.get('/',(req, res) => {
     res.render('home')
 })
-
-app.get('/festivals', catchAsync(async (req, res) => {
-    const festivals = await Festival.find({})
-    res.render('festivals/index', { festivals })
-}))
-
-app.get('/festivals/new', (req, res) => {
-    res.render('festivals/new')
-})
-
-app.post('/festivals', validateFestival, catchAsync(async (req, res, next) => {
-    // if (!req.body.festival) throw new ExpressError('Invalid Festival Data', 400)
-    const festival = new Festival(req.body.festival)
-    await festival.save()
-    res.redirect(`/festivals/${festival._id}`)
-}))
-
-app.get('/festivals/:id', catchAsync(async (req, res) => {
-    const festival = await Festival.findById(req.params.id).populate('reviews')
-    // console.log(festival)
-    res.render('festivals/show', { festival })
-}))
-
-app.get('/festivals/:id/edit', catchAsync(async (req, res) => {
-    const festival = await Festival.findById(req.params.id)
-    res.render('festivals/edit', { festival })
-}))
-
-app.put('/festivals/:id', validateFestival, catchAsync(async (req, res) => {
-    const { id } = req.params
-    const festival = await Festival.findByIdAndUpdate(id, { ...req.body.festival })
-    res.redirect(`/festivals/${festival._id}`)
-}))
-
-app.delete('/festivals/:id', catchAsync(async (req, res) => {
-    const { id } = req.params
-    await Festival.findByIdAndDelete(id)
-    res.redirect('/festivals')
-}))
 
 app.post('/festivals/:id/reviews', validateReview, catchAsync(async (req,res) => {
     const festival = await Festival.findById(req.params.id)
@@ -118,9 +73,3 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log(`Serving on ${port}`)
 })
-
-// app.get('/makefestival', async (req, res) => {
-//     const festival = new Festival ({ title: 'Artic Festival', description: 'Cold Festival'})
-//     await festival.save()
-//     res.send(festival)
-// })
