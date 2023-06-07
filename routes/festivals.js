@@ -34,12 +34,19 @@ router.post('/', validateFestival, catchAsync(async (req, res, next) => {
 
 router.get('/:id', catchAsync(async (req, res) => {
     const festival = await Festival.findById(req.params.id).populate('reviews')
-    // console.log(festival)
+    if (!festival) {
+        req.flash('error', 'Cannot find that festival')
+        return res.redirect('/festivals')
+    }
     res.render('festivals/show', { festival })
 }))
 
 router.get('/:id/edit', catchAsync(async (req, res) => {
     const festival = await Festival.findById(req.params.id)
+    if (!festival) {
+        req.flash('error', 'Cannot edit that festival')
+        return res.redirect('/festivals')
+    }
     res.render('festivals/edit', { festival })
 }))
 
