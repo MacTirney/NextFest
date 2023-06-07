@@ -28,6 +28,7 @@ router.post('/', validateFestival, catchAsync(async (req, res, next) => {
     // if (!req.body.festival) throw new ExpressError('Invalid Festival Data', 400)
     const festival = new Festival(req.body.festival)
     await festival.save()
+    req.flash('success', 'Successfully made a new festival')
     res.redirect(`/festivals/${festival._id}`)
 }))
 
