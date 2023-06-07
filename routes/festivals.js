@@ -28,7 +28,7 @@ router.post('/', validateFestival, catchAsync(async (req, res, next) => {
     // if (!req.body.festival) throw new ExpressError('Invalid Festival Data', 400)
     const festival = new Festival(req.body.festival)
     await festival.save()
-    req.flash('success', 'Successfully made a new festival')
+    req.flash('success', 'Successfully made a new Festival')
     res.redirect(`/festivals/${festival._id}`)
 }))
 
@@ -46,12 +46,14 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 router.put('/:id', validateFestival, catchAsync(async (req, res) => {
     const { id } = req.params
     const festival = await Festival.findByIdAndUpdate(id, { ...req.body.festival })
+    req.flash('success', 'Successfully updated a Festival')
     res.redirect(`/festivals/${festival._id}`)
 }))
 
 router.delete('/:id', catchAsync(async (req, res) => {
     const { id } = req.params
     await Festival.findByIdAndDelete(id)
+    req.flash('success', 'Successfully deleted a Festival')
     res.redirect('/festivals')
 }))
 
