@@ -12,8 +12,9 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user')
 
-const festivals = require('./routes/festivals')
-const reviews = require('./routes/reviews')
+const userRoutes = require('./routes/users')
+const festivalRoutes = require('./routes/festivals')
+const reviewRoutes = require('./routes/reviews')
 
 mongoose.connect('mongodb://localhost:27017/My-Next-Fest');
 
@@ -59,8 +60,9 @@ app.use((req,res,next) => {
     next();
 })
 
-app.use('/festivals', festivals)
-app.use('/festivals/:id/reviews', reviews)
+app.use('/', userRoutes)
+app.use('/festivals', festivalRoutes)
+app.use('/festivals/:id/reviews', reviewRoutes)
 
 app.get('/',(req, res) => {
     res.render('home')
