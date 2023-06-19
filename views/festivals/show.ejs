@@ -12,12 +12,14 @@
                 <li class="list-group-item">Submitted By: <%= festival.author.username %></li>
                 <li class="list-group-item">$<%= festival.price %>/ticket</li>
             </ul>
+            <% if (currentUser && festival.author.equals(currentUser._id)) { %>
             <div class="card-body">
                 <a class="card-link btn btn-info" href="/festivals/<%=festival._id%>/edit">Edit</a>
                 <form class="d-inline" action="/festivals/<%=festival._id%>?_method=DELETE" method="POST">
                     <button class="btn btn-danger">Delete</button>
                 </form>
             </div>
+            <% } %>
             <div class="card-footer text-body-secondary">
                 2 days ago
             </div>
