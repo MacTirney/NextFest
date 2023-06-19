@@ -16,6 +16,16 @@ const validateFestival = (req, res, next) => {
     }
 }
 
+const isAuthor = async (req, res, next) => {
+    const { id } = req.params
+    const festival = await Festival.findById(id)
+    if (!festival.author.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do this')
+        return res.redirect(`/festivals/${id}`);
+    }
+    next();
+}
+
 router.get('/', catchAsync(async (req, res) => {
     const festivals = await Festival.find({})
     res.render('festivals/index', { festivals })
@@ -43,8 +53,9 @@ router.get('/:id', catchAsync(async (req, res) => {
     res.render('festivals/show', { festival })
 }))
 
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
-    const festival = await Festival.findById(req.params.id)
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+    const { id } = req.params
+    const festival = await Festival.findById(id)
     if (!festival) {
         req.flash('error', 'Cannot edit that festival')
         return res.redirect('/festivals')
@@ -52,14 +63,14 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     res.render('festivals/edit', { festival })
 }))
 
-router.put('/:id', isLoggedIn, validateFestival, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateFestival, catchAsync(async (req, res) => {
     const { id } = req.params
     const festival = await Festival.findByIdAndUpdate(id, { ...req.body.festival })
     req.flash('success', 'Successfully updated a Festival')
     res.redirect(`/festivals/${festival._id}`)
 }))
 
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params
     await Festival.findByIdAndDelete(id)
     req.flash('success', 'Successfully deleted a Festival')
