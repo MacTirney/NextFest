@@ -1,3 +1,7 @@
+const { festivalSchema, reviewSchema } = require('./schemas.js')
+const ExpressError = require('./utils/ExpressError')
+const Festival = require('./models/festival');
+
 module.exports.isLoggedIn = (req,res,next) => {
     if (!req.isAuthenticated()) {
         req.session.returnTo = req.originalUrl;
@@ -12,4 +16,34 @@ module.exports.storeReturnTo = (req, res, next) => {
         res.locals.returnTo = req.session.returnTo;
     }
     next();
+}
+
+module.exports.validateFestival = (req, res, next) => {
+    const { error } = festivalSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
+}
+
+module.exports.isAuthor = async (req, res, next) => {
+    const { id } = req.params
+    const festival = await Festival.findById(id)
+    if (!festival.author.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do this')
+        return res.redirect(`/festivals/${id}`);
+    }
+    next();
+}
+
+module.exports.validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next();
+    }
 }

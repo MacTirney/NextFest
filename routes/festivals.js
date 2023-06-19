@@ -1,30 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync')
-const ExpressError = require('../utils/ExpressError')
 const Festival = require('../models/festival');
-const { festivalSchema } = require('../schemas.js')
-const { isLoggedIn } = require('../middleware')
-
-const validateFestival = (req, res, next) => {
-    const { error } = festivalSchema.validate(req.body)
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    } else {
-        next();
-    }
-}
-
-const isAuthor = async (req, res, next) => {
-    const { id } = req.params
-    const festival = await Festival.findById(id)
-    if (!festival.author.equals(req.user._id)) {
-        req.flash('error', 'You do not have permission to do this')
-        return res.redirect(`/festivals/${id}`);
-    }
-    next();
-}
+const { isLoggedIn, isAuthor, validateFestival } = require('../middleware')
 
 router.get('/', catchAsync(async (req, res) => {
     const festivals = await Festival.find({})
