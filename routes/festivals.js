@@ -28,13 +28,14 @@ router.get('/new', isLoggedIn, (req, res) => {
 router.post('/', isLoggedIn, validateFestival, catchAsync(async (req, res, next) => {
     // if (!req.body.festival) throw new ExpressError('Invalid Festival Data', 400)
     const festival = new Festival(req.body.festival)
+    festival.author = req.user._id;
     await festival.save()
     req.flash('success', 'Successfully made a new Festival')
     res.redirect(`/festivals/${festival._id}`)
 }))
 
 router.get('/:id', catchAsync(async (req, res) => {
-    const festival = await Festival.findById(req.params.id).populate('reviews')
+    const festival = await Festival.findById(req.params.id).populate('reviews').populate('author')
     if (!festival) {
         req.flash('error', 'Cannot find that festival')
         return res.redirect('/festivals')

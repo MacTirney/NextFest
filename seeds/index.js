@@ -22,6 +22,7 @@ const seedDB = async () => {
         // Temporary random price
         const price = Math.floor(Math.random() * 20) + 10;
         const festival = new Festival({
+            author: '648fc7b09920fc1f2e991fe5',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
             image: 'https://source.unsplash.com/collection/1314854',
