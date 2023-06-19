@@ -23,7 +23,12 @@ router.post('/', isLoggedIn, validateFestival, catchAsync(async (req, res, next)
 }))
 
 router.get('/:id', catchAsync(async (req, res) => {
-    const festival = await Festival.findById(req.params.id).populate('reviews').populate('author')
+    const festival = await Festival.findById(req.params.id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author')
     if (!festival) {
         req.flash('error', 'Cannot find that festival')
         return res.redirect('/festivals')
